@@ -1,0 +1,36 @@
+---
+title: "`r str_replace(str_replace_all(params$contrast,'_',' '), 'group', '')`"
+author: 
+  - Lucie Cervenkova
+  - cervenku@vscht.cz
+output:
+  prettydoc::html_pretty:
+    df_print: "paged"
+    theme: "tactile"
+params:
+  contrast: groupLTA_g2
+  data: fit_dea.Rds
+  exprs: exprs.Rds
+---
+
+```{r, eval=TRUE}
+library(limma)
+library(stringr)
+
+source(here("age_library.R"))
+```
+
+## Get contrast
+
+```{r, eval=TRUE}
+fit <-  readRDS(params$data)
+contrast_table <- limma::topTable(fit, coef = params$contrast)
+
+contrast_table <- dplyr::filter(contrast_table, abs(logFC) > 1, adj.P.Val < 0.1)
+contrast_table
+
+saveRDS(contrast_table, file = paste0(params$contrast, ".Rds"))
+```
+
+
+

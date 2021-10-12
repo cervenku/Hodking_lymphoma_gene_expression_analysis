@@ -1,0 +1,28 @@
+---
+title: "DEA signpost"
+author:
+  - Lucie Cervenkova
+  - cervenku@vscht.cz
+output: 
+  prettydoc::html_pretty:
+    df_print: "paged"
+    theme: "tactile"
+---
+
+```{r, eval=TRUE}
+library(stringr)
+fit <- readRDS("fit_dea.Rds")
+```
+
+```{r, eval=TRUE}
+contrasts <- sort(colnames(fit))[-1]
+links <-  lapply(contrasts, function(x){ paste("<a href=\"", x, ".html",'"',">", str_replace(x, "group", " "), "</a>", sep = "")})
+links <- unlist(links)
+contrasts <- unlist(lapply(contrasts, function(x) {str_replace(x, "group", "")}))
+```
+
+```{r, eval=TRUE}
+df <- data.frame(contrasts, links)
+table <- DT::datatable(df, escape = FALSE)
+table
+```
